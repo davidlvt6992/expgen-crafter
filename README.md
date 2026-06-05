@@ -4,9 +4,13 @@
 Adapting the [ExpGen (Explore to Generalize)](https://arxiv.org/abs/2306.03072) algorithm for zero-shot reinforcement learning on the [Crafter](https://github.com/danijar/crafter) benchmark.
 
 **Authors:** David Levit, Liron Kenigshtain
+
 **Supervisor:** Ev Zisselman
+
 **Lab:** CRML, Technion - Israel Institute of Technology
+
 **Semester:** Spring 2024
+
 
 ---
 
