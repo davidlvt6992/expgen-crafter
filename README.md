@@ -1,7 +1,4 @@
 
-
-https://github.com/user-attachments/assets/310682fe-3d8a-45a5-83d7-671c3c1d7943
-
 # Exploration-Driven Reinforcement Learning on Crafter
 
 Adapting the [ExpGen (Explore to Generalize)](https://arxiv.org/abs/2306.03072) algorithm for zero-shot reinforcement learning on the [Crafter](https://github.com/danijar/crafter) benchmark.
