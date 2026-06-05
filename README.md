@@ -7,9 +7,45 @@ Adapting the [ExpGen (Explore to Generalize)](https://arxiv.org/abs/2306.03072) 
 **Lab:** CRML, Technion - Israel Institute of Technology
 **Semester:** Spring 2024
 
+---
+
 ## Abstract
 
 This project investigates the generalization abilities of reinforcement learning algorithms on the Crafter benchmark -- an open-world survival game with visual inputs that evaluates a wide range of general abilities within a single environment. We design an ExpGen-inspired algorithm that integrates two key modifications into baseline PPO: (1) a GRU-based recurrence mechanism for handling partial observability, and (2) a MaxEnt intrinsic reward function that encourages exploration through entropy maximization in the state space. Our experiments show that combining memory and intrinsic exploration leads to the highest scores among all tested configurations.
+
+---
+
+## Main Contributions
+
+- Adapted an ExpGen-inspired exploration framework to the Crafter environment.
+- Extended PPO with GRU-based recurrence to improve performance under partial observability.
+- Integrated a MaxEnt intrinsic reward mechanism for exploration-driven generalization.
+- Compared PPO baselines, recurrent PPO variants, and exploration-enhanced agents on Crafter.
+- Evaluated agent performance using Crafter achievement-based generalization metrics.
+
+---
+
+## Environment Overview
+
+### Crafter Gameplay Environment
+
+<p align="center">
+  <img src="./figures/crafter_gameplay.png" width="750">
+</p>
+
+[Crafter](https://github.com/danijar/crafter) is a procedurally generated 2D survival environment inspired by Minecraft, designed to evaluate long-term planning, exploration, and generalization in reinforcement learning agents.
+
+### Crafter Achievement Tree
+
+<p align="center">
+  <img src="./figures/crafter_achievement_tree.png" width="750">
+</p>
+
+The environment contains 22 hierarchical achievements that require increasingly complex behaviors and multi-step planning.
+Score is based on the agent ability to unlock achievements : `S = exp(mean(ln(1 + s_i))) - 1`, where `s_i` is the success rate for achievement `i`. 
+This scoring mechanism rewards broad achievement coverage rather than specializing in only a few tasks, meaning that even small improvements on difficult achievements can significantly increase the overall score. 
+
+---
 
 ## Background
 
@@ -20,19 +56,11 @@ This project investigates the generalization abilities of reinforcement learning
 2. Trains a separate maximum entropy (MaxEnt) policy
 3. At test time: uses the ensemble when agents agree on an action, and falls back to the MaxEnt policy when they disagree
 
-### Crafter Benchmark
-
-[Crafter](https://github.com/danijar/crafter) is a procedurally generated 2D survival game inspired by Minecraft. It features:
-- **22 hierarchical achievements** (e.g., collect wood -> place table -> make wood pickaxe -> ...)
-- **Partial observability** -- the agent only sees its immediate surroundings
-- **Procedural generation** -- each episode has a unique world layout
-- **Geometric mean scoring** -- rewards breadth and depth of achievement discovery
-
-The Crafter score is: `S = exp(mean(ln(1 + s_i))) - 1`, where `s_i` is the success rate for achievement `i`.
-
 ### Achievement Distillation (SOTA)
 
 The current state-of-the-art on Crafter is [Achievement Distillation](https://arxiv.org/abs/2307.03486), which extends PPO with contrastive learning to predict next achievements. It achieves a score of 21.79 using only 1M environment steps.
+
+---
 
 ## Our Algorithm
 
@@ -48,12 +76,50 @@ We modify baseline PPO with two additions:
 r_total = r_extrinsic + beta * r_intrinsic
 ```
 
+---
+
+## Results
+
+Our experiments compared several agent configurations over 5M environment steps on the Crafter benchmark.
+
+| Configuration | Best Crafter Score |
+|---|---:|
+| PPO baseline | ~19 |
+| PPO + intrinsic reward (`beta = 0.001`) | ~18 |
+| PPO + recurrence | ~20 |
+| PPO + recurrence + intrinsic reward (`beta = 0.001`) | ~22 |
+| PPO + recurrence + intrinsic reward (`beta = 0.005`) | ~22 |
+
+**Takeaway:** The combination of recurrence and a well-tuned intrinsic reward (beta) achieves the highest Crafter score by enabling the agent to both remember past experience and explore novel states effectively.
+
+### Training Curves
+
+<p align="center">
+  <img src="./figures/recurrence_intrinsic_combined.png" width="850">
+</p>
+
+The recurrent PPO + MaxEnt configurations consistently achieved the highest Crafter scores during training.
+
+### Agent Gameplay
+
+#### PPO Baseline
+
+https://github.com/user-attachments/assets/PPO_BASELINE_VIDEO
+
+#### PPO + MaxEnt + Recurrence
+
+https://github.com/user-attachments/assets/PPO_MAXENT_RECURRENCE_VIDEO
+
+The exploration-enhanced recurrent agent demonstrates improved long-term exploration and broader achievement discovery compared to the PPO baseline.
+
 ### Key Findings
 
-- **Recurrence alone** significantly improves performance by enabling the agent to handle partial observability and long-term dependencies
-- **Intrinsic reward alone** (without recurrence) did not yield a clear advantage -- fine-tuning `beta` is critical
-- **Recurrence + intrinsic reward combined** achieves the best results, as the memory mechanism helps the agent better leverage the exploration bonus
-- **Optimal beta** is moderate (around 0.001-0.005); too high or too low values hurt performance
+- **Recurrence alone** significantly improves performance by helping the agent handle partial observability and long-term dependencies.
+- **Intrinsic reward alone** without recurrence did not yield a clear advantage; careful tuning of `beta` is critical.
+- **Recurrence + intrinsic reward combined** achieved the highest scores across all tested configurations.
+- **Moderate intrinsic reward scaling** (`beta ≈ 0.001-0.005`) produced the best balance between exploration and task completion.
+
+---
 
 ## Project Structure
 
@@ -87,6 +153,8 @@ expgen-crafter/
 └── wandb/                        # Weights & Biases experiment logs
 ```
 
+---
+
 ## Installation
 
 **Requirements:** Ubuntu 18.04+, Python 3.7+, CUDA-capable GPU recommended
@@ -103,6 +171,8 @@ pip install crafter
 ```
 
 If you encounter `ImportError: libffi.so.7`, try: `pip install cffi==1.13.0`
+
+---
 
 ## Usage
 
@@ -164,19 +234,7 @@ python train_maxEnt.py --env-name maze --seed 0 --use_backgrounds
 python expgen_ensemble.py --env-name maze --use_backgrounds
 ```
 
-## Results
-
-Our experiments compared several configurations over 5M environment steps on Crafter:
-
-| Configuration | Best Score |
-|---------------|-----------|
-| PPO (baseline) | ~19 |
-| PPO + intrinsic reward (beta=0.001) | ~18 |
-| PPO + recurrence | ~20 |
-| PPO + recurrence + intrinsic reward (beta=0.001) | ~22 |
-| PPO + recurrence + intrinsic reward (beta=0.005) | ~22 |
-
-**Takeaway:** The combination of recurrence and a well-tuned intrinsic reward (beta) achieves the highest Crafter score by enabling the agent to both remember past experience and explore novel states effectively.
+---
 
 ## References
 
@@ -184,9 +242,13 @@ Our experiments compared several configurations over 5M environment steps on Cra
 2. Moon, S., et al. "Discovering Hierarchical Achievements in Reinforcement Learning via Contrastive Learning." [arXiv:2307.03486](https://arxiv.org/abs/2307.03486)
 3. Hafner, D. "Benchmarking the Spectrum of Agent Capabilities." ICLR 2022. (Crafter benchmark)
 
+---
+
 ## Acknowledgements
 
 This code is based on the open-source [ExpGen](https://github.com/EvZissel/expgen) implementation and [PyTorch PPO](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail).
+
+---
 
 ## License
 
