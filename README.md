@@ -31,7 +31,7 @@ This project investigates the generalization abilities of reinforcement learning
 ### Crafter Gameplay Environment
 
 <p align="center">
-  <img src="./figures/crafter_gameplay.png" width="750">
+  <img src="./expgen-crafter/figures/crafter_gameplay.png" width="350">
 </p>
 
 [Crafter](https://github.com/danijar/crafter) is a procedurally generated 2D survival environment inspired by Minecraft, designed to evaluate long-term planning, exploration, and generalization in reinforcement learning agents.
@@ -39,7 +39,7 @@ This project investigates the generalization abilities of reinforcement learning
 ### Crafter Achievement Tree
 
 <p align="center">
-  <img src="./figures/crafter_achievement_tree.png" width="750">
+  <img src="./expgen-crafter/figures/crafter_achievement_tree.png" width="750">
 </p>
 
 The environment contains 22 hierarchical achievements that require increasingly complex behaviors and multi-step planning.
@@ -96,7 +96,7 @@ Our experiments compared several agent configurations over 5M environment steps 
 ### Training Curves
 
 <p align="center">
-  <img src="./figures/recurrence_intrinsic_combined.png" width="850">
+  <img src="./expgen-crafter/figures/recurrence_intrinsic_combined.png" width="550">
 </p>
 
 The recurrent PPO + MaxEnt configurations consistently achieved the highest Crafter scores during training.
