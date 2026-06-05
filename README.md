@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/310682fe-3d8a-45a5-83d7-671c3c1d7943
+
 # Exploration-Driven Reinforcement Learning on Crafter
 
 Adapting the [ExpGen (Explore to Generalize)](https://arxiv.org/abs/2306.03072) algorithm for zero-shot reinforcement learning on the [Crafter](https://github.com/danijar/crafter) benchmark.
@@ -104,11 +108,13 @@ The recurrent PPO + MaxEnt configurations consistently achieved the highest Craf
 
 #### PPO Baseline
 
-https://github.com/user-attachments/assets/PPO_BASELINE_VIDEO
+https://github.com/user-attachments/assets/0fbb5e60-208c-4090-a705-0968a070db1b
 
 #### PPO + MaxEnt + Recurrence
 
-https://github.com/user-attachments/assets/PPO_MAXENT_RECURRENCE_VIDEO
+
+https://github.com/user-attachments/assets/d56c0086-ac2f-4f02-8fef-f85b2564404b
+
 
 The exploration-enhanced recurrent agent demonstrates improved long-term exploration and broader achievement discovery compared to the PPO baseline.
 
